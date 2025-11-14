@@ -38,7 +38,7 @@ export class AuthController {
     if (!loginDto.username || !loginDto.password) {
       throw new UnauthorizedException('Username and password are required');
     }
-    const user = this.authService.validateUser(
+    const user =await this.authService.validateUser(
       loginDto.username,
       loginDto.password,
     );

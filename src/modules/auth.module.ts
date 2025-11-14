@@ -12,7 +12,7 @@ import { AuthService } from 'src/services/auth.service';
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET')!,
         signOptions: {
           expiresIn: parseInt(
