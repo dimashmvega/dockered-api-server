@@ -18,6 +18,7 @@ import {
   ProductMetrics,
   InventoryHealthReport,
 } from 'src/interfaces/productFilter.interface';
+import { ContentfulItem } from 'src/interfaces/contentful.interface';
 
 const DEFAULT_PAGE_SIZE = Number(process.env.DEFAULT_PAGE_SIZE) || 5;
 
@@ -28,7 +29,7 @@ export class ProductService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
-  async insertProduct(data: any): Promise<boolean> {
+  async insertProduct(data: ContentfulItem): Promise<boolean> {
     try {
       const mappedProductData = this.mapContentfulItemToProductEntity(data);
       const product = this.productRepository.create(mappedProductData);
@@ -39,10 +40,10 @@ export class ProductService {
       return true;
     } catch (error) {
       if (error instanceof Error) {
-            console.error('Error inserting product:', error.message);
-        } else {            
-            console.error('An unexpected error occurred:', error);
-        }
+        console.error('Error inserting product:', error.message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
       console.log('Insertion failed for data:', data);
       return false;
     }
@@ -222,11 +223,36 @@ export class ProductService {
     return query.getRawMany<InventoryHealthReport>();
   }
 
-  private mapContentfulItemToProductEntity(data: any): Partial<ProductEntity> {
-    const sysCopy = { ...data.sys };
-    delete sysCopy.id;
-    delete sysCopy.createdAt;
-    delete sysCopy.updatedAt;
+  // private mapContentfulItemToProductEntity(data: ContentfulItem): Partial<ProductEntity> {
+  //   const sysCopy = { ...data.sys };
+  //   delete sysCopy.id;
+  //   delete sysCopy.createdAt;
+  //   delete sysCopy.updatedAt;
+
+  //   return {
+  //     sku: data.fields.sku,
+  //     name: data.fields.name,
+  //     brand: data.fields.brand,
+  //     model: data.fields.model,
+  //     category: data.fields.category,
+  //     color: data.fields.color,
+  //     price: data.fields.price,
+  //     currency: data.fields.currency,
+  //     stock: data.fields.stock,
+  //     contentfulId: data.sys.id,
+  //     createdAt: new Date(data.sys.createdAt),
+  //     updatedAt: new Date(data.sys.updatedAt),
+  //     systemMetadata: {
+  //       metadata: data.metadata,
+  //       sys_remaining: sysCopy,
+  //     },
+  //   };
+  // }
+
+  private mapContentfulItemToProductEntity(
+    data: ContentfulItem,
+  ): Partial<ProductEntity> {
+    const { id, createdAt, updatedAt, ...sysRemaining } = data.sys;
 
     return {
       sku: data.fields.sku,
@@ -238,12 +264,12 @@ export class ProductService {
       price: data.fields.price,
       currency: data.fields.currency,
       stock: data.fields.stock,
-      contentfulId: data.sys.id,
-      createdAt: new Date(data.sys.createdAt),
-      updatedAt: new Date(data.sys.updatedAt),
+      contentfulId: id,
+      createdAt: new Date(createdAt),
+      updatedAt: new Date(updatedAt),
       systemMetadata: {
         metadata: data.metadata,
-        sys_remaining: sysCopy,
+        sys_remaining: sysRemaining,
       },
     };
   }

@@ -10,7 +10,11 @@ export class AuthService {
 
   validateUser(username: string, pass: string): AuthenticatedUser | null {
     if (username === 'admin' && pass === 'password123') {
-      const user: AuthenticatedUser = { userId: '1', username: 'admin', role: 'reporter' };
+      const user: AuthenticatedUser = {
+        userId: '1',
+        username: 'admin',
+        role: 'reporter',
+      };
       return user;
     }
     return null;
