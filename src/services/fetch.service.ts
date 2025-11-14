@@ -4,19 +4,18 @@ import axios from 'axios';
 @Injectable()
 export class FetchService {
   async fetchData(url: string): Promise<any> {
-    try{
-        
-        const response = await axios.get(url, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            params: {
-                access_token: process.env.EXTERNAL_API_TOKEN,
-                content_type: 'product',
-            },
-        });
-        return response.data;
-    }catch (error) {
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        params: {
+          access_token: process.env.EXTERNAL_API_TOKEN,
+          content_type: 'product',
+        },
+      });
+      return response.data;
+    } catch (error) {
       throw new Error(`Error fetching data from ${url}: ${error}`);
     }
   }

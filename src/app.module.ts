@@ -21,15 +21,12 @@ import { ProductService } from './services/product.service';
         database: process.env.DATABASE_NAME,
         entities: [ProductEntity],
         synchronize: true,
-      })
+      }),
     }),
     TypeOrmModule.forFeature([ProductEntity]),
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    TaskService,
-    ProductService],
+  providers: [AppService, TaskService, ProductService],
 })
-export class AppModule { }
+export class AppModule {}

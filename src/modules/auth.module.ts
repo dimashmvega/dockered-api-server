@@ -14,15 +14,18 @@ import { AuthService } from 'src/services/auth.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET')!,
-        signOptions: { 
-            expiresIn: parseInt(configService.get<string>('JWT_EXPIRATION_TIME') || '3600', 10), 
+        signOptions: {
+          expiresIn: parseInt(
+            configService.get<string>('JWT_EXPIRATION_TIME') || '3600',
+            10,
+          ),
         },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  exports: [AuthService, JwtModule, PassportModule], 
+  exports: [AuthService, JwtModule, PassportModule],
   providers: [JwtStrategy, AuthService],
 })
 export class AuthModule {}
