@@ -1,83 +1,72 @@
-# dockered-api-server
+🚀 dockered-api-server
 
-Minimal, Docker-ready API server template for building and deploying RESTful services.
+Minimal, Docker-ready API server template using NestJS for building and deploying RESTful services. Designed for rapid deployment and includes comprehensive reporting features for product data by Dimas Martinez.
 
-## Contents
-- Overview
-- Requirements
-- Quick start (Docker)
-- Local development
-- Environment variables
-- Tests & linting
-- Deployment notes
-- Contributing & license
+📋 Contents
 
-## Overview
-Small, production-oriented API server scaffold designed to run in Docker. Includes configuration via environment variables, health endpoint, and simple logging.
+Overview
+Requirements
+Quick Start (Docker)
+API Endpoints
+Local Development
+Environment Variables
+Testing and Linting
+Important Notes for Evaluation
 
-## Requirements
-- Docker >= 20.x
-- Docker Compose (optional)
-- Node.js >= 18 (for local development)
+💡Overview
 
-## Quick start (Docker)
-Build image:
-```
-docker build -t dockered-api-server:latest .
-```
-Run container:
-```
-docker run -p 3000:3000 --env-file .env --name dockered-api-server dockered-api-server:latest
-```
-Open: http://localhost:3000/
+This project is a production-oriented API server scaffold built on NestJS and designed to run in Docker containers. The primary focus is on managing a product catalog and generating key business metrics.
 
-## Local development
-Install dependencies:
-```
-npm install
-```
-Run in dev mode (example):
-```
-npm run dev
-```
-Run production build:
-```
-npm run build
-npm start
-```
+Key Features:
 
-## Environment variables
-Create a `.env` at repo root or pass via Docker:
-```
-PORT=3000
-NODE_ENV=development
-LOG_LEVEL=info
-DATABASE_URL=postgres://user:pass@db:5432/database
-```
-Adjust variables as needed.
+Containerized Environment: Full docker compose configuration for easy setup.
+Catalog Management: Endpoints for querying and deleting products (GET /products, DELETE /products/:sku).
+Protected Reports: Generation of inventory health and catalog metrics using JWT authentication.
+JWT Authentication: Simple login implementation for securing reporting endpoints.
 
-## Tests & linting
-Run tests:
-```
-npm test
-```
-Run linter:
-```
-npm run lint
-```
+⚙️ Requirements
 
-## Deployment notes
-- Use multi-stage Docker builds for smaller images.
-- Supply secrets via environment variables or a secrets manager.
-- Expose only required ports and configure health/readiness probes in orchestration.
+Docker $\ge$ 20.x
+Docker Compose (recommended for testing)
+Node.js $\ge$ 18 (for local development)
 
-## Contributing
-- Fork the repo and open pull requests.
-- Follow existing code style and include tests for new behavior.
+🐳 Quick Start (Docker)
 
-## License
-Specify project license in LICENSE file (e.g., MIT).
+To build the image and launch the API server along with its database (as configured in docker-compose.yml):
 
-## Troubleshooting
-- Container not starting: check logs `docker logs dockered-api-server`.
-- Port conflicts: verify no other service bound to configured PORT.
+Bash
+docker compose up --build
+
+
+Once the NestJS service is running (typically at http://localhost:3000), the API documentation will be available.
+API Documentation (Swagger/OpenAPI):http://localhost:3000/api/docs
+
+🗺️ API Endpoints
+
+To test the protected reporting endpoints, you must first create a user and obtain a token.
+
+| Method | Endpoint                 | Auth | Description |
+|--------|---------------------------|-------|-------------|
+| **POST**   | `/users`                 | No    | Creates a new user. **Crucial:** Use this user for subsequent login requests. |
+| **POST**   | `/auth/login`            | No    | Generates the required JWT token for accessing protected routes. |
+| **GET**    | `/products`              | No    | Retrieves products with support for comprehensive filtering (category, brand, price range) and pagination. |
+| **DELETE** | `/products/:sku`         | No    | Performs a **soft delete** on a specific product from the table. |
+| **GET**    | `/reports/metrics`       | JWT   | Provides high-level catalog metrics (active vs. deleted percentages, total records). |
+| **GET**    | `/reports/inventory-health` | JWT | Generates a report on inventory health, grouped by category (e.g., average stock age, total stock value). |
+
+
+🔑 Environment Variables
+
+Note: Specific configuration variables (JWT_SECRET, database settings, Contentful integration keys) will be shared by Dimas Martinez via email.
+
+An explicit .env file is required at the repository root, or variables must be passed directly to the Docker environment.
+
+❗ Important Notes for Evaluation
+
+External Data Synchronization (Contentful):
+
+1. Sync Failure: The external Contentful endpoint used to initially populate the ProductEntity table is currently not working (likely due to an expired SPACE_ID or access token).
+
+2. Implication: If the database products table is empty, the reporting endpoints (/reports/...) will return metrics based on zero records.
+
+3. Action Required: To fully test the data synchronization and reporting functionality with real data, please replace the Contentful-related environment variables (SPACE_ID, ENVIRONMENT_EXTERNAL, etc.) with valid values.

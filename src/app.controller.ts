@@ -58,7 +58,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post()
+  @Post('/users')
   @ApiOperation({ summary: 'Create new user (for testing purposes)' })
   async createUser(@Body() userEntity: UserEntity): Promise<string> {
     return await this.userService.createUser(userEntity);
