@@ -66,8 +66,10 @@ describe('TaskService', () => {
         ],
       };
 
-      jest.spyOn(FetchService.prototype, 'fetchData').mockResolvedValue(mockData);
-      
+      jest
+        .spyOn(FetchService.prototype, 'fetchData')
+        .mockResolvedValue(mockData);
+
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       await (service as any).runDatasyncTask();
@@ -80,9 +82,11 @@ describe('TaskService', () => {
 
     it('should handle fetch errors gracefully', async () => {
       const mockError = new Error('404 Not Found');
-      
-      jest.spyOn(FetchService.prototype, 'fetchData').mockRejectedValue(mockError);
-      
+
+      jest
+        .spyOn(FetchService.prototype, 'fetchData')
+        .mockRejectedValue(mockError);
+
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
       await (service as any).runDatasyncTask();
@@ -95,9 +99,11 @@ describe('TaskService', () => {
 
     it('should handle unexpected errors', async () => {
       const unexpectedError = 'Unexpected error';
-      
-      jest.spyOn(FetchService.prototype, 'fetchData').mockRejectedValue(unexpectedError);
-      
+
+      jest
+        .spyOn(FetchService.prototype, 'fetchData')
+        .mockRejectedValue(unexpectedError);
+
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
       await (service as any).runDatasyncTask();
