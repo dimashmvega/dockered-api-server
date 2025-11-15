@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { AuthModule } from './modules/auth.module';
 import { ProductService } from './services/product.service';
+import { UserService } from './services/user.service';
+import { UserEntity } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -19,14 +21,14 @@ import { ProductService } from './services/product.service';
         username: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
-        entities: [ProductEntity],
+        entities: [ProductEntity, UserEntity],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([ProductEntity]),
+    TypeOrmModule.forFeature([ProductEntity, UserEntity]),
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TaskService, ProductService],
+  providers: [AppService, TaskService, ProductService, UserService],
 })
 export class AppModule {}

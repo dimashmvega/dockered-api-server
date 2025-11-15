@@ -31,20 +31,20 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'User logged in successfully.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
-  login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto) {
     if (!loginDto) {
       throw new UnauthorizedException('Login data is required');
     }
     if (!loginDto.username || !loginDto.password) {
       throw new UnauthorizedException('Username and password are required');
     }
-    const user = this.authService.validateUser(
+    const user = await this.authService.validateUser(
       loginDto.username,
       loginDto.password,
     );
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return this.authService.login(user);
+    return await this.authService.login(user);
   }
 }

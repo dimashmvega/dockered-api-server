@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -7,6 +8,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +23,8 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { PaginatedProducts } from './interfaces/productFilter.interface';
+import { UserService } from './services/user.service';
+import { UserEntity } from './entities/user.entity';
 
 export interface GetProductsQuery {
   category?: string;
@@ -45,12 +49,19 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly productService: ProductService,
+    private readonly userService: UserService,
   ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get a hello world message and my linkedIn' })
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create new user (for testing purposes)' })
+  async createUser(@Body() userEntity: UserEntity): Promise<string> {
+    return await this.userService.createUser(userEntity);
   }
 
   @Get('/products')
