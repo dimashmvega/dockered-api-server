@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FetchService } from './fetch.service';
 import { ProductService } from './product.service';
@@ -11,10 +11,10 @@ export class TaskService {
   onModuleInit() {
     this.runDatasyncTask();
   }
-  
+
   @Cron(CronExpression.EVERY_HOUR)
   handleCron() {
-    this.runDatasyncTask();    
+    this.runDatasyncTask();
   }
 
   private async runDatasyncTask() {
@@ -29,20 +29,21 @@ export class TaskService {
         console.log('Processing item:', item);
         this.productService.insertProduct(item);
       });
-    } catch (error) {      
+    } catch (error) {
       let logMessage = 'An unexpected error occurred during data sync.';
       let errorMessage = 'Unknown error';
-      if(error instanceof Error) {
-        errorMessage = error.message;        
+      if (error instanceof Error) {
+        errorMessage = error.message;
         if (errorMessage.includes('404')) {
-            logMessage = 'Contentful endpoint returned 404. Check SPACE_ID/ENVIRONMENT_EXTERNAL.';
+          logMessage =
+            'Contentful endpoint returned 404. Check SPACE_ID/ENVIRONMENT_EXTERNAL.';
         } else {
-            logMessage = 'An HTTP request failed.';
+          logMessage = 'An HTTP request failed.';
         }
         console.error(`${logMessage}: ${errorMessage}`);
-      }else{
+      } else {
         console.error('An unexpected error occurred during data sync:', error);
-      }      
+      }
     }
   }
 }
