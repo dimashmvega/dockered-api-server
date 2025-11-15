@@ -16,7 +16,13 @@ export class FetchService {
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Error fetching data from ${url}: ${error}`);
+      if(error instanceof Error){
+        console.error(`Error fetching data from ${url}:`, error.message);        
+      }else{
+        error = new Error(String(error));        
+        console.error(`Error fetching data from ${url}:`, error);        
+      }
+      throw error;      
     }
   }
 }

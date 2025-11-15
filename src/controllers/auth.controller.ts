@@ -31,14 +31,14 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'User logged in successfully.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
-  async login(@Body() loginDto: LoginDto) {
+  login(@Body() loginDto: LoginDto) {
     if (!loginDto) {
       throw new UnauthorizedException('Login data is required');
     }
     if (!loginDto.username || !loginDto.password) {
       throw new UnauthorizedException('Username and password are required');
     }
-    const user = await this.authService.validateUser(
+    const user = this.authService.validateUser(
       loginDto.username,
       loginDto.password,
     );

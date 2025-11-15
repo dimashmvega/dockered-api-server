@@ -102,17 +102,22 @@ export class ProductService {
     }
 
     if (filters.minPrice || filters.maxPrice) {
-      const priceFilter: any = {};
-      if (filters.minPrice) {
-        priceFilter.price = MoreThanOrEqual(filters.minPrice);
-      }
-      if (filters.maxPrice) {
-        priceFilter.price = {
-          ...priceFilter.price,
-          ...LessThanOrEqual(filters.maxPrice),
+      if (filters.minPrice && filters.maxPrice) {
+        findOptions.where = {
+          ...findOptions.where,
+          price: Between(filters.minPrice, filters.maxPrice),
+        };
+      } else if (filters.minPrice) {
+        findOptions.where = {
+          ...findOptions.where,
+          price: MoreThanOrEqual(filters.minPrice),
+        };
+      } else if (filters.maxPrice) {
+        findOptions.where = {
+          ...findOptions.where,
+          price: LessThanOrEqual(filters.maxPrice),
         };
       }
-      findOptions.where = { ...findOptions.where, ...priceFilter };
     }
 
     try {
@@ -128,7 +133,11 @@ export class ProductService {
         totalPages,
       };
     } catch (error) {
-      console.error('Error retrieving products:', error.message);
+      if (error instanceof Error) {
+        console.error('Error retrieving products:', error.message);
+      } else {
+        console.error('rror retrieving products:', error);
+      }
       return {
         data: [],
         total: 0,
@@ -148,7 +157,12 @@ export class ProductService {
       console.log(`Products deleted successfully`);
       return deleteResult;
     } catch (error) {
-      console.error('Error deleting products:', error.message);
+      if (error instanceof Error) {
+        console.error('Error deleting products:', error.message);
+      } else {
+        console.error('Error deleting products:', error);
+      }
+
       throw error;
     }
   }
@@ -185,12 +199,13 @@ export class ProductService {
       whereClause.createdAt = Between(filters.startDate, filters.endDate);
     }
 
-    const activeFilterCount = await this.productRepository.count({
+    const activeFilterCount: number = await this.productRepository.count({
       where: whereClause,
     });
 
-    const deletedPercentage = (deletedCount / totalRecords) * 100;
-    const activeFilteredPercentage = (activeFilterCount / totalRecords) * 100;
+    const deletedPercentage: number = (deletedCount / totalRecords) * 100;
+    const activeFilteredPercentage: number =
+      (activeFilterCount / totalRecords) * 100;
 
     return {
       totalRecords,

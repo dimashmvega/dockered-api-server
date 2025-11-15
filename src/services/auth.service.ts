@@ -20,7 +20,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: AuthenticatedUser) {
+  login(user: AuthenticatedUser) {
     const payload: JwtPayload = {
       username: user.username,
       sub: user.userId,
