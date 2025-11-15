@@ -10,7 +10,7 @@ describe('FetchService', () => {
   describe('fetchData', () => {
     it('should fetch data from a given URL', async () => {
       const mockUrl = 'https://api.example.com/data';
-      
+
       // Mock axios if available
       jest.mock('axios');
 

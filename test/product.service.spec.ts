@@ -149,9 +149,7 @@ describe('ProductService', () => {
     });
 
     it('should filter products by brand', async () => {
-      const mockProducts = [
-        { id: '1', name: 'Product 1', brand: 'TestBrand' },
-      ];
+      const mockProducts = [{ id: '1', name: 'Product 1', brand: 'TestBrand' }];
 
       mockProductRepository.findAndCount.mockResolvedValue([mockProducts, 1]);
 
@@ -185,9 +183,7 @@ describe('ProductService', () => {
     });
 
     it('should filter by price range', async () => {
-      const mockProducts = [
-        { id: '1', name: 'Product 1', price: 99.99 },
-      ];
+      const mockProducts = [{ id: '1', name: 'Product 1', price: 99.99 }];
 
       mockProductRepository.findAndCount.mockResolvedValue([mockProducts, 1]);
 
