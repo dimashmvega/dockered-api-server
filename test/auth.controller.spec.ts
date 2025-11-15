@@ -32,7 +32,7 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
-    it('should login successfully with valid credentials', () => {
+    it('should login successfully with valid credentials', async () => {
       const loginDto = {
         username: 'testuser',
         password: 'password123',
@@ -44,7 +44,7 @@ describe('AuthController', () => {
       mockAuthService.validateUser.mockReturnValue(mockUser);
       mockAuthService.login.mockReturnValue(mockToken);
 
-      const result = controller.login(loginDto);
+      const result = await controller.login(loginDto);
 
       expect(result).toEqual(mockToken);
       expect(mockAuthService.validateUser).toHaveBeenCalledWith(
@@ -54,37 +54,37 @@ describe('AuthController', () => {
       expect(mockAuthService.login).toHaveBeenCalledWith(mockUser);
     });
 
-    it('should throw UnauthorizedException when no login data provided', () => {
+    it('should throw UnauthorizedException when no login data provided', async () => {
       const loginDto = null;
 
-      expect(() => controller.login(loginDto as any)).toThrow(
+      await expect(controller.login(loginDto as any)).rejects.toThrow(
         UnauthorizedException,
       );
     });
 
-    it('should throw UnauthorizedException when username is missing', () => {
+    it('should throw UnauthorizedException when username is missing', async () => {
       const loginDto = {
         username: '',
         password: 'password123',
       };
 
-      expect(() => controller.login(loginDto)).toThrow(
+      await expect(controller.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
     });
 
-    it('should throw UnauthorizedException when password is missing', () => {
+    it('should throw UnauthorizedException when password is missing', async () => {
       const loginDto = {
         username: 'testuser',
         password: '',
       };
 
-      expect(() => controller.login(loginDto)).toThrow(
+      await expect(controller.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
     });
 
-    it('should throw UnauthorizedException when credentials are invalid', () => {
+    it('should throw UnauthorizedException when credentials are invalid', async () => {
       const loginDto = {
         username: 'testuser',
         password: 'wrongpassword',
@@ -92,7 +92,7 @@ describe('AuthController', () => {
 
       mockAuthService.validateUser.mockReturnValue(null);
 
-      expect(() => controller.login(loginDto)).toThrow(
+      await expect(controller.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
     });
