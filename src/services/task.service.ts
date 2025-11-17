@@ -6,7 +6,7 @@ import { ContentfulItem } from 'src/interfaces/contentful.interface';
 
 @Injectable()
 export class TaskService {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   onModuleInit() {
     this.runDatasyncTask();
@@ -17,6 +17,21 @@ export class TaskService {
     this.runDatasyncTask();
   }
 
+  /**
+   * Executes the data synchronization task by fetching entries from Contentful
+  * and inserting them using the product service.
+  *
+  * This method builds a request URL using the `SPACE_ID` and
+  * `ENVIRONMENT_EXTERNAL` environment variables, then retrieves the data
+  * through the `FetchService`. Each returned item is processed and stored
+  * locally via `productService.insertProduct()`.
+  *
+  * Error handling:
+  * - Logs a specific message when a `404` error occurs (likely due to incorrect
+  *   `SPACE_ID` or `ENVIRONMENT_EXTERNAL`).
+  * - Logs a generic HTTP failure message for other request-related errors.
+  * - Handles unknown or non-Error exceptions safely. 
+   */
   private async runDatasyncTask() {
     console.log('Running data sync task...');
     const SPACE_ID = process.env.SPACE_ID;
