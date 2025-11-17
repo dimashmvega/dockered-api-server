@@ -238,31 +238,12 @@ export class ProductService {
     return query.getRawMany<InventoryHealthReport>();
   }
 
-  // private mapContentfulItemToProductEntity(data: ContentfulItem): Partial<ProductEntity> {
-  //   const sysCopy = { ...data.sys };
-  //   delete sysCopy.id;
-  //   delete sysCopy.createdAt;
-  //   delete sysCopy.updatedAt;
-
-  //   return {
-  //     sku: data.fields.sku,
-  //     name: data.fields.name,
-  //     brand: data.fields.brand,
-  //     model: data.fields.model,
-  //     category: data.fields.category,
-  //     color: data.fields.color,
-  //     price: data.fields.price,
-  //     currency: data.fields.currency,
-  //     stock: data.fields.stock,
-  //     contentfulId: data.sys.id,
-  //     createdAt: new Date(data.sys.createdAt),
-  //     updatedAt: new Date(data.sys.updatedAt),
-  //     systemMetadata: {
-  //       metadata: data.metadata,
-  //       sys_remaining: sysCopy,
-  //     },
-  //   };
-  // }
+  async existingProductSku(sku: string): Promise<ProductEntity | null> {
+    const products = await this.productRepository.findOne({
+      where: { sku },
+    });
+    return products;
+  }
 
   private mapContentfulItemToProductEntity(
     data: ContentfulItem,
